@@ -47,6 +47,14 @@ export default function App() {
     }))
   }
 
+  const onSaveEdit = () => {
+    const veichleIndex = veichles.findIndex((veichle) => veichle.id === editVeichleId)
+    veichles[veichleIndex] = values
+
+    setVeichles([...veichles])
+    clearInputs()
+  }
+
   const onEditVeichle = (id) => {
     const values = veichles.find((veichle) => veichle.id === id)
     setValues(values)
@@ -132,7 +140,14 @@ export default function App() {
         />
         {isEditing ? (
           <>
-            <button type='submit' className='submitButton'>
+            <button
+              type='submit'
+              className='submitButton'
+              onClick={(e) => {
+                e.preventDefault()
+                onSaveEdit()
+              }}
+            >
               Save
             </button>
             <button
