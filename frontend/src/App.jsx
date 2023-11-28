@@ -1,92 +1,156 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
-import Axios from "axios";
-import Card from "./components/cards/card";
+import React, { useCallback, useEffect, useState } from "react"
+import "./App.css"
+import Axios from "axios"
+
+const BACKEND_URL = "http://localhost:3001"
+
+const defaultValues = {
+  id: "",
+  model: "",
+  automaker: "",
+  power: "",
+  year: "",
+  value: "",
+}
 
 export default function App() {
-  const [values, setValues] = useState();
-  const [listCard, setListCard] = useState([]);
-  console.log(listCard);
-  const handleRegisterGame = () => {
-    Axios.post("http://localhost:3001/register", {
-      name: values.name,
-      cost: values.cost,
-      category: values.category,
-    }).then(() => {
-      Axios.post("http://localhost:3001/search", {
-        name: values.name,
-        cost: values.cost,
-        category: values.category,
-      }).then((response) => {
-        setListCard([
-          ...listCard,
-          {
-            id: response.data[0].id,
-            name: values.name,
-            cost: values.cost,
-            category: values.category,
-          },
-        ]);
-      });
-    });
-  };
+  const [values, setValues] = useState(defaultValues)
+  const [editVeichleId, setEditVeichleId] = useState("")
+  const [veichles, setVeichles] = useState([])
+
+  const isEditing = !!editVeichleId
+
+  const clearInputs = useCallback(() => {
+    setValues(defaultValues)
+  }, [])
+
+  const handleRegisterVeichle = (e) => {
+    e.preventDefault()
+
+    Axios.post(`${BACKEND_URL}/register`, values).finally(() => {
+      setVeichles((prev) => [...prev, values])
+    })
+
+    clearInputs()
+  }
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/getCards").then((response) => {
-      setListCard(response.data);
-    });
-  }, []);
+    Axios.get("http://localhost:3001/getVeichles").then((response) => {
+      setListCard(response.data)
+    })
+  }, [])
 
-  const handleaddValues = (value) => {
+  const handleOnChangeValue = (value) => {
     setValues((prevValues) => ({
       ...prevValues,
       [value.target.name]: value.target.value,
-    }));
-  };
+    }))
+  }
+
+  const onEditVeichle = (id) => {
+    const values = veichles.find((veichle) => veichle.id === id)
+    setValues(values)
+    setEditVeichleId(id)
+  }
+
+  const onCancelEdit = (e) => {
+    e.preventDefault()
+    setEditVeichleId("")
+    clearInputs()
+  }
 
   return (
-    <div className="app-container">
-      <div className="register-container">
-        <h1 className="register-title">CRUD Games</h1>
+    <div className='page'>
+      <form className='form' onSubmit={handleRegisterVeichle}>
+        <h1 className='form-title'>Veichle Registration</h1>
+        <input
+          className='input'
+          name='id'
+          placeholder='ID'
+          required
+          minLength={7}
+          maxLength={7}
+          disabled={isEditing}
+          value={values.id}
+          onChange={handleOnChangeValue}
+        />
+        <input className='input' name='model' placeholder='Model' required onChange={handleOnChangeValue} value={values.model} />
+        <input
+          type='number'
+          name='year'
+          className='input'
+          min={1960}
+          max={new Date().getUTCFullYear() + 1}
+          placeholder='Year'
+          required
+          onChange={handleOnChangeValue}
+          value={values.year}
+        />
+        <select className='input' name='automaker' defaultValue='' onChange={handleOnChangeValue} value={values.automaker}>
+          <option defaultChecked disabled>
+            Automaker
+          </option>
+          <option value='Audi'>Audi</option>
+          <option value='BMW'>BMW</option>
+          <option value='Porsche'>Porsche</option>
+          <option value='Mercedes'>Mercedes</option>
+          <option value='Volkswagen'>Volkswagen</option>
+        </select>
+        <input
+          type='number'
+          name='power'
+          className='input'
+          min={0}
+          placeholder='Power HP'
+          required
+          onChange={handleOnChangeValue}
+          value={values.power}
+        />
+        <input
+          type='number'
+          name='value'
+          className='input'
+          min={0}
+          placeholder='Value ($)'
+          step={0.01}
+          required
+          onChange={handleOnChangeValue}
+          value={values.value}
+        />
+        {isEditing ? (
+          <>
+            <button type='submit' className='submitButton'>
+              Save
+            </button>
+            <button className='submitButton' onClick={onCancelEdit}>
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button type='submit' className='submitButton'>
+            Register
+          </button>
+        )}
+      </form>
+      <div className='cardsContainer'>
+        {veichles.map(({ id, automaker, model, power, year, value }, index) => (
+          <div key={index} className='card'>
+            <div className='cardId'>{id}</div>
+            <div className='cardData'>
+              <div className='cardTitle'>
+                {automaker} - {model}
+              </div>
+              <div className='cardPower'>{power}HP</div>
+              <div className='cardYear'>{year}</div>
+              <div className='cardPrice'>${Number(value).toFixed(2)}</div>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Nome"
-          className="register-input"
-          onChange={handleaddValues}
-        />
-        <input
-          type="text"
-          placeholder="Preço"
-          name="cost"
-          className="register-input"
-          onChange={handleaddValues}
-        />
-        <input
-          type="text"
-          placeholder="Categoria"
-          name="category"
-          className="register-input"
-          onChange={handleaddValues}
-        />
-
-        <button onClick={handleRegisterGame} className="register-button">
-          Cadastrar
-        </button>
+              <button className='cardEdit' onClick={() => onEditVeichle(id)}>
+                Edit
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
-
-      {listCard.map((val) => (
-        <Card
-          listCard={listCard}
-          setListCard={setListCard}
-          key={val.id}
-          id={val.id}
-          name={val.name}
-          cost={val.cost}
-          category={val.category}
-        />
-      ))}
     </div>
-  );
+  )
 }

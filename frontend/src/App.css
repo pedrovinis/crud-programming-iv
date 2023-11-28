@@ -3,35 +3,134 @@
   padding: 0;
 }
 
-.app-container {
-  height: 100vh;
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 2rem;
+}
+
+.form {
+  border: 1px solid #000;
+  border-radius: 0.5rem;
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.form-title {
+  font-size: 1.75rem;
+  text-align: center;
+  font-weight: 800;
+}
+
+.input {
+  all: unset;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #bababa;
+  border-radius: 0.5rem;
+}
+
+.input:focus {
+  border-color: #000;
+}
+
+.input:disabled {
+  color: #8e8e8e;
+}
+
+.submitButton {
+  all: unset;
   display: flex;
   align-items: center;
-  flex-direction: column;
   justify-content: center;
+  font-weight: 600;
+  background-color: #000;
+  border: 1px solid #000;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  cursor: pointer;
 }
 
-.register-container {
-  padding: 10px 20px;
-  width: max-content;
-  height: max-content;
-  margin-top: 20px;
-  border: 3px solid black;
-  border-radius: 5px;
+.submitButton:hover,
+.submitButton:focus {
+  background-color: transparent;
+  color: #000;
 }
 
-.register-title {
+.cardsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #bababa;
+  border-radius: 1rem;
+  max-width: 400px;
+  width: 100%;
+}
+
+.cardId {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000;
+  border-top: 8px solid blue;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.cardData {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cardTitle {
+  font-weight: 500;
+  font-size: 0.925rem;
+}
+
+.cardPower {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.cardYear {
+  font-size: 0.9rem;
+}
+
+.cardPrice {
+  font-weight: 600;
+}
+
+.cardEdit {
+  all: unset;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 20px;
-  font-family: fantasy;
-}
-
-.register-input {
-  display: block;
-  margin: 10px auto;
-  padding: 7px 0;
-}
-
-.register-button {
-  padding: 2px 5px;
+  width: 100%;
+  cursor: pointer;
+  background: #000;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  color: #fff;
 }
