@@ -53,10 +53,23 @@ export default function App() {
     setEditVeichleId(id)
   }
 
-  const onCancelEdit = (e) => {
-    e.preventDefault()
+  const onCancelEdit = () => {
     setEditVeichleId("")
     clearInputs()
+  }
+
+  const onDelete = (id) => {
+    const hasConfirmed = confirm(`Are you sure you wanna delete veichle with id '${id}'?`)
+    if (!hasConfirmed) return
+
+    Axios.delete(`http://localhost:3001/delete/${id}`)
+
+    const newVeichles = veichles.filter((veichle) => veichle.id !== id)
+    setVeichles([...newVeichles])
+
+    if (editVeichleId === id) {
+      onCancelEdit()
+    }
   }
 
   return (
@@ -122,7 +135,13 @@ export default function App() {
             <button type='submit' className='submitButton'>
               Save
             </button>
-            <button className='submitButton' onClick={onCancelEdit}>
+            <button
+              className='submitButton'
+              onClick={(e) => {
+                e.preventDefault()
+                onCancelEdit()
+              }}
+            >
               Cancel
             </button>
           </>
@@ -144,9 +163,14 @@ export default function App() {
               <div className='cardYear'>{year}</div>
               <div className='cardPrice'>${Number(value).toFixed(2)}</div>
 
-              <button className='cardEdit' onClick={() => onEditVeichle(id)}>
-                Edit
-              </button>
+              <div className='cardButtonsContainer'>
+                <button className='cardEdit' onClick={() => onEditVeichle(id)}>
+                  Edit
+                </button>
+                <button className='cardDelete' onClick={() => onDelete(id)}>
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}

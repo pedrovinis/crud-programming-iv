@@ -134,3 +134,25 @@
   padding: 0.25rem;
   color: #fff;
 }
+
+.cardDelete {
+  all: unset;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  cursor: pointer;
+  background: red;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  color: #fff;
+}
+
+.cardButtonsContainer {
+  display: flex;
+  flex-direction: column;
+}
