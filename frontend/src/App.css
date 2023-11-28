@@ -70,6 +70,7 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  width: 100%;
 }
 
 .card {
@@ -79,7 +80,7 @@
   padding: 1rem;
   border: 1px solid #bababa;
   border-radius: 1rem;
-  max-width: 400px;
+  max-width: 250px;
   width: 100%;
 }
 
