@@ -15,28 +15,28 @@ const defaultValues = {
 
 export default function App() {
   const [values, setValues] = useState(defaultValues)
-  const [editVeichleId, setEditVeichleId] = useState("")
-  const [veichles, setVeichles] = useState([])
+  const [editVehicleId, setEditVehicleId] = useState("")
+  const [vehicles, setVeihicles] = useState([])
 
-  const isEditing = !!editVeichleId
+  const isEditing = !!editVehicleId
 
   const clearInputs = useCallback(() => {
     setValues(defaultValues)
   }, [])
 
-  const handleRegisterVeichle = (e) => {
+  const handleRegisterVehicle = (e) => {
     e.preventDefault()
 
     Axios.post(`${BACKEND_URL}/register`, values).finally(() => {
-      setVeichles((prev) => [...prev, values])
+      setVehicles((prev) => [...prev, values])
     })
 
     clearInputs()
   }
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/getVeichles").then((response) => {
-      setListCard(response.data)
+    Axios.get(`${BACKEND_URL}/getVehicles`).then((response) => {
+      setVehicles(response.data)
     })
   }, [])
 
@@ -48,42 +48,44 @@ export default function App() {
   }
 
   const onSaveEdit = () => {
-    const veichleIndex = veichles.findIndex((veichle) => veichle.id === editVeichleId)
-    veichles[veichleIndex] = values
+    Axios.put(`${BACKEND_URL}/edit`).then(() => {
+      const vehicleIndex = vehicles.findIndex((vehicle) => vehicle.id === editVehicleId)
+      vehicles[vehicleIndex] = values
 
-    setVeichles([...veichles])
-    clearInputs()
+      setVehicles([...vehicles])
+      clearInputs()
+    })
   }
 
-  const onEditVeichle = (id) => {
-    const values = veichles.find((veichle) => veichle.id === id)
+  const onEditVehicle = (id) => {
+    const values = vehicles.find((vehicle) => vehicle.id === id)
     setValues(values)
-    setEditVeichleId(id)
+    setEditVehicleId(id)
   }
 
   const onCancelEdit = () => {
-    setEditVeichleId("")
+    setEditVehicleId("")
     clearInputs()
   }
 
   const onDelete = (id) => {
-    const hasConfirmed = confirm(`Are you sure you wanna delete veichle with id '${id}'?`)
+    const hasConfirmed = confirm(`Are you sure you wanna delete vehicle with id '${id}'?`)
     if (!hasConfirmed) return
 
-    Axios.delete(`http://localhost:3001/delete/${id}`)
+    Axios.delete(`${BACKEND_URL}/delete/${id}`)
 
-    const newVeichles = veichles.filter((veichle) => veichle.id !== id)
-    setVeichles([...newVeichles])
+    const newVehiCles = vehicles.filter((vehicle) => vehicle.id !== id)
+    setVehicles([...newVehicles])
 
-    if (editVeichleId === id) {
+    if (editVehicleId === id) {
       onCancelEdit()
     }
   }
 
   return (
     <div className='page'>
-      <form className='form' onSubmit={handleRegisterVeichle}>
-        <h1 className='form-title'>Veichle Registration</h1>
+      <form className='form' onSubmit={handleRegisterVehicle}>
+        <h1 className='form-title'>Vehicle Registration</h1>
         <input
           className='input'
           name='id'
@@ -167,7 +169,7 @@ export default function App() {
         )}
       </form>
       <div className='cardsContainer'>
-        {veichles.map(({ id, automaker, model, power, year, value }, index) => (
+        {vehicles.map(({ id, automaker, model, power, year, value }, index) => (
           <div key={index} className='card'>
             <div className='cardId'>{id}</div>
             <div className='cardData'>
@@ -179,7 +181,7 @@ export default function App() {
               <div className='cardPrice'>${Number(value).toFixed(2)}</div>
 
               <div className='cardButtonsContainer'>
-                <button className='cardEdit' onClick={() => onEditVeichle(id)}>
+                <button className='cardEdit' onClick={() => onEditVehicle(id)}>
                   Edit
                 </button>
                 <button className='cardDelete' onClick={() => onDelete(id)}>
